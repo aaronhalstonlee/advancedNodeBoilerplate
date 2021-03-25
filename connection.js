@@ -17,7 +17,7 @@ async function main(callback) {
     } catch (e) {
         // Catch any errors
         console.error(e, `URI is: ${URI}`);
-        throw new Error(`Unable to Connect to Database! here's the error: ${e} and the client: ${JSON.stringify(client)}`)
+        throw new Error(`Unable to Connect to Database! here's the error: ${e}`)
     }
 }
 
