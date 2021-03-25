@@ -16,7 +16,7 @@ async function main(callback) {
 
     } catch (e) {
         // Catch any errors
-        console.error(e);
+        console.error(e, `URI is: ${URI}`);
         throw new Error('Unable to Connect to Database')
     }
 }
