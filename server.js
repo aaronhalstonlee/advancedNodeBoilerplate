@@ -1,11 +1,12 @@
 //'use strict';
-const dotenv = require('dotenv').config();
+require('dotenv').config({path: "./sample.env"});
 const express = require('express');
 const myDB = require('./connection');
 const fccTesting = require('./freeCodeCamp/fcctesting.js');
 const session = require('express-session');
 const passport = require('passport');
 const ObjectID = require('mongodb').ObjectID
+
 
 const app = express();
 app.set('view engine', 'pug');
@@ -19,7 +20,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 console.log("session secret: ", process.env.SESSION_SECRET)//app.config.session.store = new CustomStore(_.clone(app.config.session));
 app.use(session({
-  secret: process.env.SESSION_SECRET,
+  secret: '444',//process.env.SESSION_SECRET,
   resave: true,
   saveUninitialized: true,
   cookie: { secure: false }

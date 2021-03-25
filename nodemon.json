@@ -13,7 +13,9 @@
         "./public/*"
     ],
     "env": {
-        "NODE_ENV": "development"
+        "NODE_ENV": "development",
+        "MONGO_URI": "mongodb+srv://aaronhalstonlee:Sassdad1@cluster0.vuh29.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
+        "SESSION_SECRET": "444"
     },
     "ext": "js,json,pug,css"
 }
