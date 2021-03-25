@@ -40,11 +40,11 @@ myDB(async client => {
     });
   });
 
-  app.route('/login').post(passport.authenticate('local', {failureRedirect:'/'}),(req,res) => {
+  app.route('/login').post(passport.authenticate('local', { failureRedirect:'/'}),(req,res) => {
     res.redirect('/profile');
   })
 
-  app.route('/pofile').get((req, res) => {
+  app.route('/pofile').get(ensureAuthenticated, (req, res) => {
     res.render(process.cwd() + '/views/pug/profile');
   })
   
@@ -83,6 +83,12 @@ myDB(async client => {
   });
 });
 
+const ensureAuthenticated = (req, res, nexta) => {
+  if(req.isAuthenticated()){
+    return next();
+  }
+  res.redirect('/');
+}
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
