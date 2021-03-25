@@ -19,7 +19,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 console.log("session secret: ", process.env.SESSION_SECRET)//app.config.session.store = new CustomStore(_.clone(app.config.session));
 app.use(session({
-  secret: '444',//process.env.SESSION_SECRET,
+  secret: process.env.SESSION_SECRET,
   resave: true,
   saveUninitialized: true,
   cookie: { secure: false }

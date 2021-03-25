@@ -3,7 +3,7 @@ const dotenv = require('dotenv').config();
 const { MongoClient } = require('mongodb');
 
 async function main(callback) {
-    const URI = 'mongodb+srv://aaronhalstonlee:Sassdad1@cluster0.vuh29.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'//process.env.MONGO_URI; // Declare MONGO_URI in your .env file
+    const URI = process.env.MONGO_URI//'mongodb+srv://aaronhalstonlee:Sassdad1@cluster0.vuh29.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'//process.env.MONGO_URI; // Declare MONGO_URI in your .env file
     //console.log("mongo connection URI++++++++++++", `${__dirname}/../../sample.env`);
     const client = new MongoClient(URI, { useNewUrlParser: true, useUnifiedTopology: true });
     
