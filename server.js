@@ -1,4 +1,4 @@
-//'use strict';
+'use strict';
 require('dotenv').config({path: "./sample.env"});
 const express = require('express');
 const myDB = require('./connection');
@@ -17,9 +17,6 @@ app.use('/public', express.static(process.cwd() + '/public'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use(passport.initialize());
-app.use(passport.session());
-//console.log("session secret: ", process.env.SESSION_SECRET)//app.config.session.store = new CustomStore(_.clone(app.config.session));
 app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: true,
@@ -27,16 +24,19 @@ app.use(session({
   cookie: { secure: false }
 }));
 
+app.use(passport.initialize());
+app.use(passport.session());
+//console.log("session secret: ", process.env.SESSION_SECRET)//app.config.session.store = new CustomStore(_.clone(app.config.session));
 
-myDB(async client => {
+myDB(async (client) => {
   const myDataBase = await client.db('database').collection('users');
 
   
   app.route('/').get((req, res) => {
-    res.render(process.cwd() + '/views/pug', {
-      showLogin: true,
+    res.render('pug',{//process.cwd() + '/views/pug', {
       title: 'Connected to database', 
-      message: 'Please login'
+      message: 'Please login',
+      showLogin: true
     });
   });
 
@@ -44,25 +44,9 @@ myDB(async client => {
     res.redirect('/profile');
   })
 
-  app.route('/pofile').get(ensureAuthenticated, (req, res) => {
+  app.route('/profile').get(ensureAuthenticated, (req, res) => {
     res.render(process.cwd() + '/views/pug/profile');
   })
-  
-  passport.use(new LocalStrategy( (username, password, done) => {
-    myDataBase.findOne({ username: username}, (err, user) => {
-      console.log('User '+username+' attempted to log in.');
-      if(err){
-        return done(err);
-      }
-      if(!user){
-        return done(null, false);
-      }
-      if(password !== user.password){
-        return done(null, false);
-      }
-      return done(null, user);
-    })
-  }))
 
   passport.serializeUser((user, done) => {
     done(null, user._id);
@@ -73,6 +57,16 @@ myDB(async client => {
       done(null, doc);
     })
   })
+  
+  passport.use(new LocalStrategy( (username, password, done) => {
+    myDataBase.findOne({ username: username}, (err, user) => {
+      console.log('User '+username+' attempted to log in.');
+      if(err){ return done(err); }
+      if(!user){ return done(null, false); }
+      if(password !== user.password){ return done(null, false); }
+      return done(null, user);
+    })
+  }));
 
 }).catch(e => {
   app.route('/').get((req, res) => {
