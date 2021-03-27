@@ -40,17 +40,22 @@ myDB(async (client) => {
   });
 
   app.route('/login').post(passport.authenticate('local', { failureRedirect:'/'}),(req,res) => {
-    try {
       console.log('redirecting to /profile');
-      res.redirect('/profile');
-    } catch(err){
-      console.log("/profile route failed: " + err);
-    }
+      res.redirect(process.cwd() + '/views/pug/profile');
   })
 
   app.route('/profile').get(ensureAuthenticated, (req, res) => {
     console.log('rendering /profile');
-    res.render(process.cwd() + '/views/pug/profile', {username: req.user.username});
+    res.render('/profile', {username: req.user.username});
+  });
+
+  app.route('/logout').get((req, res) => {
+    req.logout();
+    res.redirect('/');
+  });
+
+  app.use((req, res, next) => {
+      res.status(404).type('text').send('Not found');
   })
 
   passport.serializeUser((user, done) => {
