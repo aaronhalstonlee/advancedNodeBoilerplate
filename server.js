@@ -42,12 +42,13 @@ myDB(async (client) => {
 
   app.route('/login').post(passport.authenticate('local', { failureRedirect:'/'}),(req,res) => {
       console.log('redirecting to /profile');
-      res.redirect(process.cwd() + '/views/pug/profile');
+      let pathToGo = `http://localhost:${process.env.PORT}/profile` || '';
+      res.redirect(pathToGo);
   })
 
   app.route('/profile').get(ensureAuthenticated, (req, res) => {
     console.log('rendering /profile');
-    res.render('/profile', {username: req.user.username});
+    res.render('pug/profile', {username: req.user.username});
   });
 
   app.route('/logout').get((req, res) => {
@@ -87,7 +88,7 @@ myDB(async (client) => {
   });
 
   passport.deserializeUser((id, done) => {
-    myDataBase.findOne({_id: new ObjectId(id) }, (err, doc) => {
+    myDataBase.findOne({_id: new ObjectID(id) }, (err, doc) => {
       done(null, doc);
     })
   })
@@ -115,7 +116,7 @@ myDB(async (client) => {
   });
 });
 
-const ensureAuthenticated = (req, res, nexta) => {
+const ensureAuthenticated = (req, res, next) => {
   if(req.isAuthenticated()){
     return next();
   }
