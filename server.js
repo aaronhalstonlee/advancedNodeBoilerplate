@@ -7,7 +7,7 @@ const session = require('express-session');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const ObjectID = require('mongodb').ObjectID
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 
 const app = express();
@@ -59,8 +59,6 @@ myDB(async (client) => {
 
   app.route('/register').post((req, res, next) => {
     const hash = bcrypt.hashSync(req.body.password, 12);
-    console.log('hash: ', hash)
-    console.log('psw', req.body.password);
     myDataBase.findOne({username: req.body.username}, (err, user) => {
       if(err){ 
         console.log(err);
