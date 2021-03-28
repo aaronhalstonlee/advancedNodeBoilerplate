@@ -7,6 +7,7 @@ const session = require('express-session');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const ObjectID = require('mongodb').ObjectID
+const bcrypt = require('bcrypt');
 
 
 const app = express();
@@ -57,13 +58,18 @@ myDB(async (client) => {
   });
 
   app.route('/register').post((req, res, next) => {
+    const hash = bcrypt.hashSync(req.body.password, 12);
+    console.log('hash: ', hash)
+    console.log('psw', req.body.password);
     myDataBase.findOne({username: req.body.username}, (err, user) => {
       if(err){ 
+        console.log(err);
         next(err) 
       } else if(user){
+        console.log('user already exists!')
         res.redirect('/');
       } else {
-        myDataBase.insertOne({username: req.body.username, password: req.body.password }, (err, doc) => {
+        myDataBase.insertOne({username: req.body.username, password: hash }, (err, doc) => {
           if(err) {
             console.log('could not insert user to database')
             console.log(err);
@@ -96,10 +102,10 @@ myDB(async (client) => {
   passport.use(new LocalStrategy( (username, password, done) => {
     try {
       myDataBase.findOne({username: username}, (err, user) => {
-        console.log('User '+ username +' attempted to log in and user is: ');
+        console.log('User '+ username +' attempted to log in!');
         if(err){ console.log(err); return done(err); }
         if(!user){ console.log('no user by that name'); return done(null, false); }
-        if(password !== user.password){ console.log('password incorrect'); return done(null, false); }
+        if(!bcrypt.compareSync(password, user.password)){ return done(null, false); }
         return done(null, user);
       });
     } catch(err){
