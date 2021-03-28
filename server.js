@@ -43,7 +43,7 @@ myDB(async (client) => {
 
   app.route('/login').post(passport.authenticate('local', { failureRedirect:'/'}),(req,res) => {
       console.log('redirecting to /profile');
-      let pathToGo = `http://localhost:${process.env.PORT}/profile` || '';
+      let pathToGo = `/profile` || '';
       res.redirect(pathToGo);
   })
 
@@ -73,6 +73,7 @@ myDB(async (client) => {
             console.log(err);
             res.redirect('/')
           } else {
+            console.log(doc.ops[0])
             next(null, doc.ops[0]);
           }
         });
